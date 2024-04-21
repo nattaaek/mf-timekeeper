@@ -1,0 +1,28 @@
+{
+  "name": "mf-timekeeper",
+  "version": "1.0.4",
+  "description": "",
+  "main": "dist/mf-timekeeper.js",
+  "type": "module",
+  "types": "dist/mf-timekeeper.d.ts",
+  "scripts": {
+    "build": "tsc && node postbuild.js",
+    "test": "vitest",
+    "mutation-test": "stryker run"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^20.12.7",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "^8.2.6",
+    "@stryker-mutator/html-reporter": "^3.1.0",
+    "@stryker-mutator/typescript-checker": "^8.2.6",
+    "@stryker-mutator/vitest-runner": "^8.2.6",
+    "vite": "^5.2.10",
+    "vite-plugin-commonjs": "^0.10.1",
+    "vitest": "^1.5.0"
+  }
+}

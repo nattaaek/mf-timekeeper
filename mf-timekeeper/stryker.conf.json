@@ -1,0 +1,10 @@
+{
+    "_comment": "This is a simplified configuration for demonstration.",
+    "checkers": ["typescript"],
+    "testRunner": "vitest",
+    "reporters": ["html", "clear-text", "progress"],
+    "mutate": ["src/**/*.ts"],
+    "tsconfigFile": "tsconfig.json",
+    "coverageAnalysis": "perTest"
+  }
+  
