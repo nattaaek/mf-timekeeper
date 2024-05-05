@@ -1,5 +1,6 @@
 // MFTimekeeper.ts
 import { getCurrentTimestamp } from './utils';
+import fetch from 'node-fetch';
 
 interface TimekeeperResponse {
     mf_version: {
@@ -18,16 +19,25 @@ export async function updateVersion(baseUrl: string, remoteName: string, version
     return result;
 }
 
-async function getLatestVersionMetadata(baseUrl: string, remoteName: string): Promise<{ version: string }> {
+async function getLatestVersionMetadata(baseUrl: string, remoteName: string) {
     if (baseUrl) {
-        const response = await fetch(`http://${baseUrl}/api/version/${remoteName}`);
-        response.json().then((data: TimekeeperResponse) => {
-            return data.mf_version.version
-        });
+        try {
+            const response = await fetch(`http://${baseUrl}/api/version/${remoteName}`);
+            if (response.ok) {
+                const data = await response.json();
+                return data; // Ensure your server responds with { version: '...' }
+            } else {
+                throw new Error('Network response was not ok.');
+            }
+        } catch (error) {
+            console.error("Fetch error:", (error as Error).message);
+            return {
+                version: getCurrentTimestamp() // Fallback if fetch fails
+            };
+        }
     }
-
     return {
-        version: getCurrentTimestamp()  // Return the timestamp as a string version identifier
+        version: getCurrentTimestamp() // Default fallback
     };
 }
 
