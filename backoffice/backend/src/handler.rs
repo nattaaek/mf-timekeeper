@@ -1,6 +1,6 @@
 use crate::{
     model::{AppState, MfVersion, UpdateMfVersion},
-    response::{GenericResponse, LatestMfVersionResponse, MfVersionData, MfVersionListResponse},
+    response::{GenericResponse, MfVersionData, MfVersionListResponse},
 };
 use actix_web::{delete, get, patch, post, web, HttpResponse, Responder};
 use chrono::prelude::*;
@@ -19,18 +19,14 @@ pub async fn get_latest_mf_version(
         .filter(|version| version.appName == app_name.to_string())
         .max_by_key(|version| &version.version)
     {
-        LatestMfVersionResponse {
-            data: MfVersionData {
-                mf_version: last_version.clone(),
-            },
+        MfVersionData {
+            mf_version: last_version.clone(),
         }
     } else {
-        LatestMfVersionResponse {
-            data: MfVersionData {
-                mf_version: MfVersion {
-                    version: "".to_string(),
-                    appName: "".to_string(),
-                },
+        MfVersionData {
+            mf_version: MfVersion {
+                version: "".to_string(),
+                appName: "".to_string(),
             },
         }
     };

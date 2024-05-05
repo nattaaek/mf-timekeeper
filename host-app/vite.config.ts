@@ -5,7 +5,7 @@ import getRemoteEntryUrl from 'mf-timekeeper';
 
 export default defineConfig(async () => {
   // Fetching the remote entry URL asynchronously
-  const url = await getRemoteEntryUrl('http://example.com', 'app');
+  const url = await getRemoteEntryUrl('http://localhost:8000', 'egg');
 
   return {
     plugins: [

@@ -14,11 +14,6 @@ pub struct MfVersionData {
 }
 
 #[derive(Serialize, Debug)]
-pub struct LatestMfVersionResponse {
-    pub data: MfVersionData,
-}
-
-#[derive(Serialize, Debug)]
 pub struct MfVersionListResponse {
     pub mf_versions: Vec<MfVersion>,
 }
