@@ -5,12 +5,6 @@ import './App.css'
 
 
 const SampleDialog = lazy(() => import('remoteApp/SampleDialog') as Promise<{ default: ComponentType<unknown> }>);
-interface TimekeeperResponse {
-  mf_version: {
-      version: string;
-      appName: string;
-  }
-}
 
 function App() {
   const [count, setCount] = useState(0)
