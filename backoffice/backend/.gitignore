@@ -1,0 +1,18 @@
+# Compiled files
+/target/
+
+# Dependency directories
+Cargo.lock
+Cargo.toml.orig
+
+# Build output
+Cargo.toml.bk
+Cargo.toml.bkp
+Cargo.toml.bak
+Cargo.toml~*
+Cargo.toml.swp
+Cargo.toml.swo
+Cargo.toml.swn
+Cargo.toml.un~
+Cargo.toml.orig
+Cargo.toml.orig.*
