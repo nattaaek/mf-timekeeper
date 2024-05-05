@@ -9,8 +9,8 @@ interface TimekeeperResponse {
 }
 
 export async function getRemoteEntryUrl(baseUrl: string, remoteName: string): Promise<string> {
-    const metadata = await getLatestVersionMetadata(baseUrl, remoteName);
-    return `http://${baseUrl}/assets/${metadata.version}_remoteEntry.js`;
+    const version = await getLatestVersionMetadata(baseUrl, remoteName);
+    return `http://${baseUrl}/assets/${version}_remoteEntry.js`;
 }
 
 export async function updateVersion(baseUrl: string, remoteName: string, version: string): Promise<boolean> {
