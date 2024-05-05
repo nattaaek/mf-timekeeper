@@ -1,6 +1,13 @@
+mod handler;
+mod model;
+mod response;
+
+use actix_web::http::header;
 use actix_web::middleware::Logger;
-use actix_web::{get, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
 use serde::Serialize;
+use actix_cors::Cors;
+use model::AppState;
 
 
 #[derive(Serialize)]
@@ -28,10 +35,27 @@ async fn main() -> std::io::Result<()> {
     }
     env_logger::init();
 
+    let app_state = AppState::init();
+    let app_data = web::Data::new(app_state);
+
     println!("Starting server at http://127.0.0.1:8000");
     
-    HttpServer::new(|| {
+    HttpServer::new(move || {
+        let cors = Cors::default()
+            .allowed_origin("http://localhost:3000")
+            .allowed_origin("http://localhost:3000/")
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![
+                header::CONTENT_TYPE,
+                header::AUTHORIZATION,
+                header::ACCEPT,
+            ])
+            .supports_credentials();
+
         App::new()
+            .app_data(app_data.clone())
+            .configure(handler::configure)
+            .wrap(cors)
             .service(health_checker_handler)
             .wrap(Logger::default())
     })
