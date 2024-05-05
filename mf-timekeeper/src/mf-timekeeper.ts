@@ -25,6 +25,7 @@ async function getLatestVersionMetadata(baseUrl: string, remoteName: string) {
             const response = await fetch(`http://${baseUrl}/api/version/${remoteName}`);
             if (response.ok) {
                 const data = await response.json() as TimekeeperResponse;
+                console.log(data.toString());
                 return data.mf_version.version;
             } else {
                 throw new Error('Network response was not ok.');

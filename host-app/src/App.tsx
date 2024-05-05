@@ -15,14 +15,6 @@ interface TimekeeperResponse {
 function App() {
   const [count, setCount] = useState(0)
 
-  const a = async () => {
-    const response = await fetch(`http://localhost:8000/api/version/egg`);
-    response.json().then((data: TimekeeperResponse) => {
-        console.log(data.mf_version.version)
-        return data.mf_version.version
-    });
-  }
-    a()
   return (
     <>
 
