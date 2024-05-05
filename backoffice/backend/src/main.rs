@@ -9,7 +9,6 @@ use serde::Serialize;
 use actix_cors::Cors;
 use model::AppState;
 
-
 #[derive(Serialize)]
 pub struct GenericResponse {
     pub status: String,
