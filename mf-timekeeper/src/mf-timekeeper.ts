@@ -24,20 +24,20 @@ async function getLatestVersionMetadata(baseUrl: string, remoteName: string) {
         try {
             const response = await fetch(`http://${baseUrl}/api/version/${remoteName}`);
             if (response.ok) {
-                const data = await response.json();
-                return data; // Ensure your server responds with { version: '...' }
+                const data = await response.json() as TimekeeperResponse;
+                return data.mf_version.version;
             } else {
                 throw new Error('Network response was not ok.');
             }
         } catch (error) {
             console.error("Fetch error:", (error as Error).message);
             return {
-                version: getCurrentTimestamp() // Fallback if fetch fails
+                version: getCurrentTimestamp() 
             };
         }
     }
     return {
-        version: getCurrentTimestamp() // Default fallback
+        version: getCurrentTimestamp()
     };
 }
 
