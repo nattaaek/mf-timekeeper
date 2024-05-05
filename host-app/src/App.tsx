@@ -5,13 +5,27 @@ import './App.css'
 
 
 const SampleDialog = lazy(() => import('remoteApp/SampleDialog') as Promise<{ default: ComponentType<unknown> }>);
-
+interface TimekeeperResponse {
+  mf_version: {
+      version: string;
+      appName: string;
+  }
+}
 
 function App() {
   const [count, setCount] = useState(0)
 
+  const a = async () => {
+    const response = await fetch(`http://localhost:8000/api/version/egg`);
+    response.json().then((data: TimekeeperResponse) => {
+        console.log(data.mf_version.version)
+        return data.mf_version.version
+    });
+  }
+    a()
   return (
     <>
+
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />

@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import federation from '@originjs/vite-plugin-federation'
-import getRemoteEntryUrl from 'mf-timekeeper';
+import { getRemoteEntryUrl } from 'mf-timekeeper';
 
 export default defineConfig(async () => {
   // Fetching the remote entry URL asynchronously
-  const url = await getRemoteEntryUrl('http://localhost:8000', 'egg');
+  const url = await getRemoteEntryUrl('localhost:8000', 'egg');
 
   return {
     plugins: [
