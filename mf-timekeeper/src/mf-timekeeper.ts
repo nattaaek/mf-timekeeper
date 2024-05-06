@@ -1,44 +1,19 @@
 // MFTimekeeper.ts
-import { getCurrentTimestamp } from './utils';
 import fetch from 'node-fetch';
 
-interface TimekeeperResponse {
-    mf_version: {
-        version: string;
-        appName: string;
-    }
-}
-
-export async function getRemoteEntryUrl(baseUrl: string, remoteName: string, apiUrl: string): Promise<string> {
-    return `fetch('http://${apiUrl}/api/version/${remoteName}').then(response => response.json()).then(data => \`http://${baseUrl}/\${data.mf_version.version}_remoteEntry.js\`)`;
+export function getRemoteEntryUrl(baseUrl: string, remoteName: string, apiUrl: string): string {
+    return `fetch('http://${apiUrl}/api/version/${remoteName}')
+        .then(response => response.json())
+        .then(data => \`http://${baseUrl}/\${data.mf_version.version}_remoteEntry.js\`)
+        .catch(error => {
+            console.error('Error fetching version:', error);
+            return 'http://${baseUrl}/fallback_remoteEntry.js';
+        })`;
 }
 
 export async function updateVersion(apiUrl: string, remoteName: string, version: string): Promise<boolean> {
     const result = await updateVersionMetadata(apiUrl, remoteName, version);
     return result;
-}
-
-async function getLatestVersionMetadata(apiUrl: string, remoteName: string) {
-    if (apiUrl) {
-        try {
-            const response = await fetch(`http://${apiUrl}/api/version/${remoteName}`);
-            if (response.ok) {
-                const data = await response.json() as TimekeeperResponse;
-                console.log(data.toString());
-                return data.mf_version.version;
-            } else {
-                throw new Error('Network response was not ok.');
-            }
-        } catch (error) {
-            console.error("Fetch error:", (error as Error).message);
-            return {
-                version: getCurrentTimestamp() 
-            };
-        }
-    }
-    return {
-        version: getCurrentTimestamp()
-    };
 }
 
 async function updateVersionMetadata(apiUrl: string, remoteName: string, version: string): Promise<boolean> {

@@ -53,20 +53,6 @@ pub async fn get_all_mf_versions(
     HttpResponse::Ok().json(response)
 }
 
-#[get("/api/versions")]
-pub async fn abc(
-    data: web::Data<AppState>
-) -> impl Responder {
-    let response =
-        MfVersionData {
-            mf_version: MfVersion {
-                version: "http://localhost:4173/assets/1714927623569_remoteEntry.js".to_string(),
-                appName: "http://localhost:4173/assets/1714927623569_remoteEntry.js".to_string(),
-            },
-        };
-    HttpResponse::Ok().json(response)
-}
-
 #[post("/api/version")]
 pub async fn create_mf_version(
     data: web::Data<AppState>,
@@ -88,6 +74,5 @@ pub async fn create_mf_version(
 pub fn configure(cfg: &mut web::ServiceConfig) {
     cfg.service(get_latest_mf_version);
     cfg.service(get_all_mf_versions);
-    cfg.service(abc);
     cfg.service(create_mf_version);
 }

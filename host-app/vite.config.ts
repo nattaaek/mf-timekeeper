@@ -4,19 +4,14 @@ import federation from '@originjs/vite-plugin-federation'
 import { getRemoteEntryUrl } from 'mf-timekeeper';
 
 export default defineConfig(async () => {
-  // Fetching the remote entry URL asynchronously
-  ;
-
   return {
     plugins: [
       react(),
       federation({
         name: 'host-app',
         remotes: {
-          //remoteApp: url
           remoteApp: {
-            external: getRemoteEntryUrl('localhost:4173/assets', 'egg', '127.0.0.1:8000'),
-            external: `fetch('http://localhost:8000/api/versions').then(response=>response.json()).then(data=>data.mf_version.version)`,
+            external: await getRemoteEntryUrl('localhost:4173/assets', 'egg', '127.0.0.1:8000'),
             externalType: 'promise'
           }
         },
