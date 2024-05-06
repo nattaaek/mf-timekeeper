@@ -1,4 +1,3 @@
-// MFTimekeeper.ts
 import fetch from 'node-fetch';
 
 export function getRemoteEntryUrl(baseUrl: string, remoteName: string, apiUrl: string): string {
