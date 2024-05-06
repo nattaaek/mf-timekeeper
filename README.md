@@ -1,1 +1,1 @@
-TBD
+Module federation versioning control plugin for Vite 
