@@ -5,7 +5,7 @@ import { getRemoteEntryUrl } from 'mf-timekeeper';
 
 export default defineConfig(async () => {
   // Fetching the remote entry URL asynchronously
-  const url = await getRemoteEntryUrl('localhost:4173', 'egg', '127.0.0.1:8000');
+  ;
 
   return {
     plugins: [
@@ -13,7 +13,12 @@ export default defineConfig(async () => {
       federation({
         name: 'host-app',
         remotes: {
-          remoteApp: url, // Dynamically setting the URL from fetched data
+          //remoteApp: url
+          remoteApp: {
+            external: getRemoteEntryUrl('localhost:4173/assets', 'egg', '127.0.0.1:8000'),
+            external: `fetch('http://localhost:8000/api/versions').then(response=>response.json()).then(data=>data.mf_version.version)`,
+            externalType: 'promise'
+          }
         },
         shared: ["react", "react-dom"],
       })

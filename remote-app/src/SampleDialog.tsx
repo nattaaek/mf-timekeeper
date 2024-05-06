@@ -18,6 +18,7 @@ const SampleDialog: React.FC<SampleDialogProps> = ({ onClose }) => {
 
     return (
         <div>
+            <h1>I'm Dialog from remote app v4</h1>
             <button onClick={handleButtonClick}>Open Dialog</button>
             {isOpen && (
                 <div>
