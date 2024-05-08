@@ -1,7 +1,5 @@
-import fetch from 'node-fetch';
-
 export function getRemoteEntryUrl(baseUrl: string, remoteName: string, apiUrl: string): string {
-    return `fetch('http://${apiUrl}/api/version/${remoteName}')
+    return `fetch('${apiUrl}')
         .then(response => response.json())
         .then(data => \`http://${baseUrl}/\${data.mf_version.version}_remoteEntry.js\`)
         .catch(error => {
