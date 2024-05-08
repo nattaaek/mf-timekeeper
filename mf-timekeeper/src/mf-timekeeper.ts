@@ -1,10 +1,14 @@
-export function getRemoteEntryUrl(baseUrl: string, remoteName: string, apiUrl: string): string {
-    return `fetch('${apiUrl}')
+export function getRemoteEntryUrl(baseUrl: string, apiUrl: string, fallbackUrl: string, timeout = 5000): string {
+    return `
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), ${timeout});
+
+    fetch('${apiUrl}')
         .then(response => response.json())
-        .then(data => \`http://${baseUrl}/\${data.mf_version.version}_remoteEntry.js\`)
+        .then(data => \`http://${baseUrl}/\${data.version}_remoteEntry.js\`)
         .catch(error => {
             console.error('Error fetching version:', error);
-            return 'http://${baseUrl}/fallback_remoteEntry.js';
+            return 'http://${fallbackUrl}?/\${new Date().getTime()}';
         })`;
 }
 
