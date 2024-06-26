@@ -1,19 +1,68 @@
-import { describe, it, expect, vi } from 'vitest';
-import { getCurrentTimestamp } from './utils';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import createFetchMock from 'vitest-fetch-mock';
+import { getRemoteEntryUrl } from './utils';
+import { GetRemoteEntryOptions } from './types/options';
 
-describe('getCurrentTimestamp', () => {
-  it('returns a timestamp string in the expected format YYYYMMDD_HHMMSS', () => {
-    const timestamp = getCurrentTimestamp();
-    expect(timestamp).toMatch(/^\d{8}_\d{6}$/);
-    const parts = timestamp.split('_');
-    expect(parts[0]).toHaveLength(8); // YYYYMMDD
-    expect(parts[1]).toHaveLength(6); // HHMMSS
+const fetchMocker = createFetchMock(vi);
+fetchMocker.enableMocks();
+
+describe('getRemoteEntryUrl', () => {
+  beforeEach(() => {
+    fetchMock.resetMocks();
   });
 
-  it('adjusts month correctly', () => {
-    vi.useFakeTimers().setSystemTime(new Date('2023-04-21T12:00:00Z'));
-    const timestamp = getCurrentTimestamp();
-    expect(timestamp.startsWith('20230421')).toBe(true);
-    vi.useRealTimers();
-  });
-});
+  it('should be return remoteEntry from base url with version number', async () => {
+    const options: GetRemoteEntryOptions = {
+      remoteName: 'myRemoteName',
+      currentHost: 'myCurrentHost',
+      apiUrl: 'https://api.myendpoint.com?token=1234',
+      baseUrl: 'https://cdn.mycdn.com/cdn-mf/',
+      fallbackUrl: 'https://cdn.mycdn.com/cdn-mf/remoteEntry-deprecated.js',
+      timeout: 3000
+    };
+    const remoteEntry = getRemoteEntryUrl(options)
+
+    fetchMock.mockResponseOnce(JSON.stringify({ version: '2024_06_21__09_02', name: "myRemoteName", remoteURL: "https://cdn.mycdn.com/cdn-mf/" }));
+
+    const remoteEntryFunction = new Function(`return ${remoteEntry};`);
+    const remoteEntryResult = await remoteEntryFunction();
+    expect(remoteEntryResult).toBe("https://cdn.mycdn.com/cdn-mf/2024_06_21__09_02.remoteEntry.js")
+  })
+
+  it('should be return fallback url when api is very slow', async () => {
+    const options: GetRemoteEntryOptions = {
+      remoteName: 'myRemoteName',
+      currentHost: 'myCurrentHost',
+      apiUrl: 'https://api.myendpoint.com?token=1234',
+      baseUrl: 'https://cdn.mycdn.com/cdn-mf/',
+      fallbackUrl: 'https://cdn.mycdn.com/cdn-mf/remoteEntry-deprecated.js',
+      timeout: 1000
+    };
+    const remoteEntry = getRemoteEntryUrl(options)
+
+    fetchMock.mockResponseOnce(() => new Promise(resolve => setTimeout(() => resolve(JSON.stringify({ version: '2024_06_21__09_02', name: "myRemoteName", remoteURL: "https://cdn.mycdn.com/cdn-mf/" })), 10000)));
+
+    const remoteEntryFunction = new Function(`return ${remoteEntry};`);
+    const remoteEntryResult = await remoteEntryFunction();
+    expect(remoteEntryResult).contain(`https://cdn.mycdn.com/cdn-mf/remoteEntry-deprecated.js`)
+  })
+
+  it('should be return fallback url when api is error', async () => {
+    const options: GetRemoteEntryOptions = {
+      remoteName: 'myRemoteName',
+      currentHost: 'myCurrentHost',
+      apiUrl: 'https://api.myendpoint.com?token=1234',
+      baseUrl: 'https://cdn.mycdn.com/cdn-mf/',
+      fallbackUrl: 'https://cdn.mycdn.com/cdn-mf/remoteEntry-deprecated.js',
+      timeout: 3000
+    };
+    const remoteEntry = getRemoteEntryUrl(options)
+
+    fetchMock.mockReject(new Error('error on api'));
+
+    const remoteEntryFunction = new Function(`return ${remoteEntry};`);
+    const remoteEntryResult = await remoteEntryFunction();
+
+    expect(remoteEntryResult).contain(`https://cdn.mycdn.com/cdn-mf/remoteEntry-deprecated.js`)
+  })
+})
